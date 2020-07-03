@@ -92,13 +92,11 @@ class EdifyGenerator(object):
 
   def AssertDevice(self, device):
     """Assert that the device identifier is the given string."""
-    cmd = ('assert(' +
-           ' || \0'.join(['getprop("ro.product.device") == "%s" ||\0getprop("ro.build.product") == "%s"'
-                         % (i, i) for i in device.split(",")]) +
-           ' ||\0abort("This package is for device: %s; ' +
-           'this device is " + getprop("ro.product.device") + ".");' +
-           ');') % device
-    self.script.append(self._WordWrap(cmd))
+    self.script.append('ui_print("Checking if device is bigPart partitioned...");')
+    self.script.append('run_program("/sbin/sh", "-c", "/sbin/dmesg | /sbin/grep -c Fixing | sed s/^/ro.build.bipart=/g > /tmp/bigPART.prop || true");')
+    self.script.append('ifelse(file_getprop("/tmp/bigPART.prop", "ro.build.bipart") == "3", ')
+    self.script.append('    ui_print("Device is bigPart partitioned!");, ')
+    self.script.append('    abort("Device is NOT bigPart partitioned!"); );')
 
   def AssertSomeBootloader(self, *bootloaders):
     """Assert that the bootloader version is one of *bootloaders."""
