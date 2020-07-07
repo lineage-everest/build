@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # Copyright (C) 2012-2013, The CyanogenMod Project
 #           (C) 2017,      The LineageOS Project
 #
